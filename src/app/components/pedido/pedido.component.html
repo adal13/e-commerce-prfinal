@@ -1,0 +1,118 @@
+<div class="container mt-4">
+  <h2 class="text-center">Gestión de Pedidos</h2>
+
+  <button
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#pedidoModal"
+  >
+    Agregar Pedido
+  </button>
+
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Productos</th>
+        <th>Total</th>
+        <th>Fecha de Creación</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pedido of pedidos; let i = index">
+        <td>{{ pedido.id }}</td>
+        <td>{{ pedido.cliente.nombre }} {{ pedido.cliente.apellido }}</td>
+        <td>
+          <ul>
+            <li *ngFor="let producto of pedido.productos">
+              {{ producto.nombre }} - {{ producto.precio | currency }}
+            </li>
+          </ul>
+        </td>
+        <td>{{ pedido.total | currency }}</td>
+        <td>{{ pedido.fechaCreacion | date : "short" }}</td>
+        <td>{{ pedido.estado }}</td>
+        <td>
+          <button
+            class="btn btn-warning btn-sm me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#pedidoModal"
+            (click)="editarPedido(i)"
+          >
+            Editar
+          </button>
+          <button class="btn btn-danger btn-sm" (click)="eliminarPedido(i)">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal para agregar/editar pedidos -->
+<div
+  class="modal fade"
+  id="pedidoModal"
+  tabindex="-1"
+  aria-labelledby="pedidoModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pedidoModalLabel">
+          {{ editIndex !== null ? "Editar Pedido" : "Agregar Pedido" }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="pedidoForm" (ngSubmit)="guardarPedido()">
+          <div class="mb-3">
+            <label class="form-label">Cliente</label>
+            <select class="form-control" formControlName="cliente">
+              <option *ngFor="let cliente of clientes" [value]="cliente">
+                {{ cliente.nombre }} {{ cliente.apellido }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Productos</label>
+            <select multiple class="form-control" formControlName="productos">
+              <option *ngFor="let producto of productos" [value]="producto">
+                {{ producto.nombre }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <select class="form-control" formControlName="estado">
+              <option *ngFor="let estado of estados" [value]="estado">
+                {{ estado }}
+              </option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success">
+            {{ editIndex !== null ? "Actualizar" : "Agregar" }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary ms-2"
+            data-bs-dismiss="modal"
+            id="cerrarModal"
+          >
+            Cancelar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
