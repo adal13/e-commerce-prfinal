@@ -1,0 +1,122 @@
+<div class="container mt-4">
+  <h2 class="text-center">Gestión de Productos</h2>
+
+  <button
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#productoModal"
+  >
+    Agregar Producto
+  </button>
+
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of productos; let i = index">
+        <td>{{ producto.id }}</td>
+        <td>{{ producto.nombre }}</td>
+        <td>{{ producto.descripcion }}</td>
+        <td>{{ producto.precio | currency }}</td>
+        <td>{{ producto.stock }}</td>
+        <td>
+          <button
+            class="btn btn-warning btn-sm me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#productoModal"
+            (click)="editarProducto(i)"
+          >
+            Editar
+          </button>
+          <button class="btn btn-danger btn-sm" (click)="eliminarProducto(i)">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal para agregar/editar productos -->
+<div
+  class="modal fade"
+  id="productoModal"
+  tabindex="-1"
+  aria-labelledby="productoModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="productoModalLabel">
+          {{ editIndex !== null ? "Editar Producto" : "Agregar Producto" }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()">
+          <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="nombre"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="descripcion"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Precio</label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="precio"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Stock</label>
+            <input
+              type="number"
+              class="form-control"
+              formControlName="stock"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-success">
+            {{ editIndex !== null ? "Actualizar" : "Agregar" }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary ms-2"
+            data-bs-dismiss="modal"
+            id="cerrarModal"
+          >
+            Cancelar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
