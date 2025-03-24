@@ -1,0 +1,102 @@
+<div class="container mt-5">
+  <h2 class="mb-4">Gestión de Clientes</h2>
+  <button
+    class="btn btn-success mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#clienteModal"
+  >
+    Agregar Cliente
+  </button>
+
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Dirección</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cliente of clientes; let i = index">
+        <td>{{ cliente.id }}</td>
+        <td>{{ cliente.nombre }}</td>
+        <td>{{ cliente.apellido }}</td>
+        <td>{{ cliente.email }}</td>
+        <td>{{ cliente.telefono }}</td>
+        <td>{{ cliente.direccion }}</td>
+        <td>
+          <button
+            class="btn btn-warning btn-sm"
+            (click)="editarCliente(i)"
+            data-bs-toggle="modal"
+            data-bs-target="#clienteModal"
+          >
+            Editar
+          </button>
+          <button class="btn btn-danger btn-sm" (click)="eliminarCliente(i)">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal para Agregar/Editar Cliente -->
+<div class="modal fade" id="clienteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar Cliente</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="clienteForm" (ngSubmit)="guardarCliente()">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre *</label>
+            <input type="text" class="form-control" formControlName="nombre" />
+          </div>
+          <div class="mb-3">
+            <label for="apellido" class="form-label">Apellido *</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="apellido"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email *</label>
+            <input type="email" class="form-control" formControlName="email" />
+          </div>
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono *</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="telefono"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="direccion" class="form-label"
+              >Dirección (máx. 100 caracteres)</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              formControlName="direccion"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
