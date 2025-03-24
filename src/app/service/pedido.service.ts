@@ -1,22 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Cliente } from './cliente.service';
 import { Producto } from './producto.service';
-
-export enum EstadoPedido {
-  PENDIENTE = 'Pendiente',
-  ENVIADO = 'Enviado',
-  ENTREGADO = 'Entregado',
-  CANCELADO = 'Cancelado'
-}
-
-export interface Pedido {
-  id: number;
-  cliente: Cliente;
-  productos: Producto[];
-  total: number;
-  fechaCreacion: Date;
-  estado: EstadoPedido;
-}
+import { EstadoPedido } from '../models/enum.models';
+import { Pedido } from '../models/pedido.models';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +14,8 @@ export class PedidoService {
   private pedidos: Pedido[] = [];
 
   getPedidos(): Pedido[] {
-    return this.pedidos;
+    //return this.pedidos;
+    return this.pedidos.filter(p => p.estado !== EstadoPedido.CANCELADO);
   }
 
   agregarPedido(pedido: Pedido): void {
@@ -44,10 +31,17 @@ export class PedidoService {
   }
 
   eliminarPedido(index: number): void {
-    this.pedidos.splice(index, 1);
+    // this.pedidos.splice(index, 1);
+    this.pedidos[index].estado = EstadoPedido.CANCELADO;
+
   }
 
   private calcularTotal(productos: Producto[]): number {
     return productos.reduce((acc, prod) => acc + prod.precio, 0);
   }
+
+  getPedidosPorCorreo(email: string): Pedido[] {
+    return this.pedidos.filter(pedido => pedido.cliente.email === email);
+  }
+
 }
