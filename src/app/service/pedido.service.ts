@@ -1,47 +1,78 @@
+import { environment } from './../environment/environment';
 import { Injectable } from '@angular/core';
-import { Cliente } from './cliente.service';
-import { Producto } from './producto.service';
 import { EstadoPedido } from '../models/enum.models';
 import { Pedido } from '../models/pedido.models';
+import { Producto } from '../models/producto.models';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PedidoService {
 
-  // constructor() { }
+  private apiUrl: string = environment.apiCliente;
 
-  private pedidos: Pedido[] = [];
+  constructor(private http: HttpClient) { }
 
-  getPedidos(): Pedido[] {
-    //return this.pedidos;
-    return this.pedidos.filter(p => p.estado !== EstadoPedido.CANCELADO);
+  // Obtiene todos los pedidos activos (no cancelados)
+  getPedidos(): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(this.apiUrl).pipe(
+      map(pedidos => pedidos.filter(p => p.estado !== EstadoPedido.CANCELADO)),
+      catchError(this.handleError)
+    );
   }
 
-  agregarPedido(pedido: Pedido): void {
-    pedido.id = this.pedidos.length + 1;
-    pedido.total = this.calcularTotal(pedido.productos);
-    pedido.fechaCreacion = new Date();
-    this.pedidos.push(pedido);
+  // Crea un nuevo pedido
+  crearPedido(pedido: Pedido): Observable<Pedido> {
+    return this.http.post<Pedido>(this.apiUrl, pedido).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  editarPedido(index: number, pedido: Pedido): void {
-    pedido.total = this.calcularTotal(pedido.productos);
-    this.pedidos[index] = { ...pedido, id: this.pedidos[index].id };
+  // Actualiza un pedido existente
+  actualizarPedido(id: number, pedido: Partial<Pedido>): Observable<Pedido> {
+    return this.http.put<Pedido>(`${this.apiUrl}/${id}`, pedido).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  eliminarPedido(index: number): void {
-    // this.pedidos.splice(index, 1);
-    this.pedidos[index].estado = EstadoPedido.CANCELADO;
-
+  // Actualiza solo el estado de un pedido
+  actualizarEstadoPedido(id: number, nuevoEstado: EstadoPedido): Observable<Pedido> {
+    return this.http.patch<Pedido>(`${this.apiUrl}/${id}/estado`, { estado: nuevoEstado }).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  private calcularTotal(productos: Producto[]): number {
-    return productos.reduce((acc, prod) => acc + prod.precio, 0);
+  // Cancela un pedido (marca como cancelado)
+  cancelarPedido(id: number): Observable<void> {
+    return this.actualizarEstadoPedido(id, EstadoPedido.CANCELADO).pipe(
+      map(() => undefined)
+    );
   }
 
-  getPedidosPorCorreo(email: string): Pedido[] {
-    return this.pedidos.filter(pedido => pedido.cliente.email === email);
+  // Obtiene pedidos por correo electrónico del cliente
+  getPedidosPorCorreo(email: string): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${this.apiUrl}?cliente.email=${email}`).pipe(
+      map(pedidos => pedidos.filter(p => p.estado !== EstadoPedido.CANCELADO)),
+      catchError(this.handleError)
+    );
+  }
+
+  // Manejo centralizado de errores
+  private handleError(error: HttpErrorResponse) {
+    console.error('Error en PedidoService:', error);
+
+    let errorMessage = 'Ocurrió un error al procesar la solicitud';
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = `Código: ${error.status}\nMensaje: ${error.message}`;
+    }
+
+    return throwError(() => new Error(errorMessage));
   }
 
 }
