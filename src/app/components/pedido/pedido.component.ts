@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { Cliente } from 'src/app/models/cliente.models';
 import { EstadoPedido } from 'src/app/models/enum.models';
 import { Pedido } from 'src/app/models/pedido.models';
-import { Cliente, ClienteService } from 'src/app/service/cliente.service';
+import { Producto } from 'src/app/models/producto.models';
+import { ClienteService } from 'src/app/service/cliente.service';
 import { PedidoService } from 'src/app/service/pedido.service';
-import { Producto, ProductoService } from 'src/app/service/producto.service';
+import { ProductoService } from 'src/app/service/producto.service';
 
 @Component({
   selector: 'app-pedido',
@@ -12,13 +15,15 @@ import { Producto, ProductoService } from 'src/app/service/producto.service';
   styleUrls: ['./pedido.component.css']
 })
 export class PedidoComponent {
+  pedidosObs: Observable<Pedido[]> | undefined;
+
 
   pedidos: Pedido[] = [];
   clientes: Cliente[] = [];
   productos: Producto[] = [];
   pedidoForm: FormGroup;
   editIndex: number | null = null;
-  pedidosFiltrados: Pedido[] = [];
+  pedidosFiltrados: Observable<Pedido[]> = new Observable<Pedido[]>();
   emailSeleccionado: string = '';
   //estados = Object.values(EstadoPedido);
   // Filtramos estados para que 'Cancelado' no aparezca en el formulario
@@ -38,13 +43,18 @@ export class PedidoComponent {
   }
 
   ngOnInit(): void {
-    this.pedidos = this.pedidoService.getPedidos();
+    this.pedidosObs = this.pedidoService.getPedidos();
     this.clientes = this.clienteService.getClientes();
     this.productos = this.productoService.getProductos();
+
+    this.pedidoService.getPedidos().subscribe((pedidos) => {
+      this.pedidos = pedidos;
+      this.pedidosFiltrados = of(pedidos);
+    });
   }
 
   cargarPedidos() {
-    this.pedidos = this.pedidoService.getPedidos();
+    this.pedidosObs = this.pedidoService.getPedidos();
   }
 
   // actualizarEstado(index: number, nuevoEstado: EstadoPedido) {
@@ -58,8 +68,10 @@ export class PedidoComponent {
   actualizarEstado(index: number, nuevoEstado: EstadoPedido) {
     if (this.pedidos[index].estado !== EstadoPedido.ENTREGADO) {
       this.pedidos[index].estado = nuevoEstado;
-      this.pedidoService.editarPedido(index, this.pedidos[index]);
-      this.pedidos = this.pedidoService.getPedidos();
+      this.pedidoService.actualizarPedido(index, this.pedidos[index]);
+      this.pedidoService.getPedidos().subscribe(pedidos => {
+        this.pedidos = pedidos;
+      });
     }
   }
 
@@ -76,15 +88,17 @@ export class PedidoComponent {
       };
 
       if (this.editIndex !== null) {
-        this.pedidoService.editarPedido(this.editIndex, pedidoData);
+        this.pedidoService.actualizarPedido(this.editIndex, pedidoData);
         this.editIndex = null;
       } else {
-        this.pedidoService.agregarPedido(pedidoData);
+        this.pedidoService.crearPedido(pedidoData);
       }
 
       this.pedidoForm.reset({ estado: EstadoPedido.PENDIENTE });
       (document.getElementById('cerrarModal') as HTMLButtonElement).click();
-      this.pedidos = this.pedidoService.getPedidos();
+      this.pedidoService.getPedidos().subscribe(pedidos => {
+        this.pedidos = pedidos;
+      });
     }
   }
 
@@ -100,7 +114,7 @@ export class PedidoComponent {
 
   eliminarPedido(index: number) {
     if (confirm('¿Seguro que deseas eliminar este pedido?')) {
-      this.pedidoService.eliminarPedido(index);
+      this.pedidoService.cancelarPedido(index);
       this.cargarPedidos();
       //this.pedidos = this.pedidoService.getPedidos();
     }
@@ -110,7 +124,9 @@ export class PedidoComponent {
     if (this.emailSeleccionado) {
       this.pedidosFiltrados = this.pedidoService.getPedidosPorCorreo(this.emailSeleccionado);
     } else {
-      this.pedidosFiltrados = this.pedidoService.getPedidos(); // Mostrar todos si no hay filtro
+      this.pedidoService.getPedidos().subscribe(pedidos => {
+        this.pedidosFiltrados = of(pedidos); // Mostrar todos si no hay filtro
+      });
     }
   }
 

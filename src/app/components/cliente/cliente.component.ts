@@ -1,9 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Cliente } from 'src/app/models/cliente.models';
 import { EstadoPedido } from 'src/app/models/enum.models';
-import { Cliente, ClienteService } from 'src/app/service/cliente.service';
+import { Producto } from 'src/app/models/producto.models';
+import { ClienteService } from 'src/app/service/cliente.service';
 import { PedidoService } from 'src/app/service/pedido.service';
-import { Producto, ProductoService } from 'src/app/service/producto.service';
+import { ProductoService } from 'src/app/service/producto.service';
 
 declare const bootstrap: any; // 👈 Declaración para TypeScript
 @Component({
@@ -84,7 +86,7 @@ export class ClienteComponent {
   guardarPedido() {
     if (this.pedidoForm.valid) {
       const pedidoData = this.pedidoForm.value;
-      this.pedidoService.agregarPedido(pedidoData);
+      this.pedidoService.crearPedido(pedidoData);
       this.pedidoForm.reset();
       const modal = bootstrap.Modal.getInstance(document.getElementById('pedidoModal')!);
       modal.hide();
