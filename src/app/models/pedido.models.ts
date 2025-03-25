@@ -1,6 +1,6 @@
-import { Cliente } from "../service/cliente.service";
-import { Producto } from "../service/producto.service";
+import { Cliente } from "./cliente.models";
 import { EstadoPedido } from "./enum.models";
+import { Producto } from "./producto.models";
 
 export interface Pedido {
   id: number;
