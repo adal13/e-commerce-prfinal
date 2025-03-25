@@ -31,7 +31,7 @@
     </thead>
     <tbody>
       <tr
-        *ngFor="let pedido of pedidosFiltrados; let i = index"
+        *ngFor="let pedido of pedidosFiltrados | async; let i = index"
         [ngClass]="obtenerClaseEstado(pedido.estado)"
       >
         <td>{{ pedido.id }}</td>
