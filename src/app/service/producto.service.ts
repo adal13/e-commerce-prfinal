@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import {HttpClient} from '@angular/common/http'
+import {Producto} from 'src/app/models/producto.models'
 export interface Producto {
   id: number;
   nombre: string;
@@ -13,15 +15,17 @@ export interface Producto {
 
 export class ProductoService {
 
+  private apiUrl ="http://localhost:4200/";
+  
   private productos: Producto[] = [
     { id: 1, nombre: 'Laptop', descripcion: 'Laptop de última generación', precio: 1200, stock: 10 },
     { id: 2, nombre: 'Mouse', descripcion: 'Mouse inalámbrico', precio: 25, stock: 50 }
   ];
 
-  // constructor() { }
+  // constructor(private http: HttpProducto) { }
 
   getProductos(): Producto[] {
-    return this.productos;
+    return this.http.get<Producto[]>(this.apiUrl);
   }
 
   agregarProducto(producto: Producto): void {

@@ -24,7 +24,8 @@ export class ProductoComponent {
   }
 
   ngOnInit(): void {
-    this.productos = this.productoService.getProductos();
+   // this.productos = this.productoService.getProductos();
+   this.loadProductos();
   }
 
   guardarProducto() {
