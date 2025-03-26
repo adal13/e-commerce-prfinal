@@ -8,7 +8,8 @@ import { ClienteComponent } from './components/cliente/cliente.component';
 import { PedidoComponent } from './components/pedido/pedido.component';
 import { ProductoComponent } from './components/producto/producto.component';
 import { InicioComponent } from './components/inicio/inicio.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -22,9 +23,10 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
-  providers: [],
+  providers: [provideHttpClient()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

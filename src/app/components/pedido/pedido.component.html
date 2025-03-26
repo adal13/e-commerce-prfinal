@@ -1,13 +1,21 @@
 <div class="container mt-4">
   <h2 class="text-center">Gestión de Pedidos</h2>
 
-  <button
-    class="btn btn-primary mb-3"
-    data-bs-toggle="modal"
-    data-bs-target="#pedidoModal"
-  >
-    Agregar Pedido
-  </button>
+  <!-- Filtro por Cliente -->
+  <div class="mb-3">
+    <label for="clienteFiltro" class="form-label">Filtrar por Cliente:</label>
+    <select
+      id="clienteFiltro"
+      class="form-select"
+      [(ngModel)]="emailSeleccionado"
+      (change)="filtrarPedidos()"
+    >
+      <option value="">-- Seleccionar Cliente --</option>
+      <option *ngFor="let cliente of clientes" [value]="cliente.email">
+        {{ cliente.nombre }} {{ cliente.apellido }} ({{ cliente.email }})
+      </option>
+    </select>
+  </div>
 
   <table class="table table-striped">
     <thead class="table-dark">
@@ -22,7 +30,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let pedido of pedidos; let i = index">
+      <tr
+        *ngFor="let pedido of pedidosFiltrados | async; let i = index"
+        [ngClass]="obtenerClaseEstado(pedido.estado)"
+      >
         <td>{{ pedido.id }}</td>
         <td>{{ pedido.cliente.nombre }} {{ pedido.cliente.apellido }}</td>
         <td>
@@ -34,85 +45,43 @@
         </td>
         <td>{{ pedido.total | currency }}</td>
         <td>{{ pedido.fechaCreacion | date : "short" }}</td>
-        <td>{{ pedido.estado }}</td>
+        <td>
+          <select
+            class="form-select"
+            [(ngModel)]="pedido.estado"
+            (change)="actualizarEstado(i, pedido.estado)"
+            [disabled]="pedido.estado === 'Entregado'"
+          >
+            <option *ngFor="let estado of estados" [value]="estado">
+              {{ estado }}
+            </option>
+          </select>
+        </td>
         <td>
           <button
             class="btn btn-warning btn-sm me-2"
             data-bs-toggle="modal"
             data-bs-target="#pedidoModal"
             (click)="editarPedido(i)"
+            [disabled]="
+              pedido.estado === 'Entregado' || pedido.estado === 'Cancelado'
+            "
           >
             Editar
           </button>
-          <button class="btn btn-danger btn-sm" (click)="eliminarPedido(i)">
+          <button
+            class="btn btn-danger btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#pedidoModal"
+            [disabled]="
+              pedido.estado === 'Entregado' || pedido.estado === 'Cancelado'
+            "
+            (click)="eliminarPedido(i)"
+          >
             Eliminar
           </button>
         </td>
       </tr>
     </tbody>
   </table>
-</div>
-
-<!-- Modal para agregar/editar pedidos -->
-<div
-  class="modal fade"
-  id="pedidoModal"
-  tabindex="-1"
-  aria-labelledby="pedidoModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="pedidoModalLabel">
-          {{ editIndex !== null ? "Editar Pedido" : "Agregar Pedido" }}
-        </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Cerrar"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="pedidoForm" (ngSubmit)="guardarPedido()">
-          <div class="mb-3">
-            <label class="form-label">Cliente</label>
-            <select class="form-control" formControlName="cliente">
-              <option *ngFor="let cliente of clientes" [value]="cliente">
-                {{ cliente.nombre }} {{ cliente.apellido }}
-              </option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Productos</label>
-            <select multiple class="form-control" formControlName="productos">
-              <option *ngFor="let producto of productos" [value]="producto">
-                {{ producto.nombre }}
-              </option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Estado</label>
-            <select class="form-control" formControlName="estado">
-              <option *ngFor="let estado of estados" [value]="estado">
-                {{ estado }}
-              </option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-success">
-            {{ editIndex !== null ? "Actualizar" : "Agregar" }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-secondary ms-2"
-            data-bs-dismiss="modal"
-            id="cerrarModal"
-          >
-            Cancelar
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
 </div>
