@@ -30,6 +30,7 @@ export class ClienteComponent {
     private productoService: ProductoService,
   ) {
     this.clienteForm = this.fb.group({
+      id: [null],
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -45,30 +46,35 @@ export class ClienteComponent {
   }
 
   ngOnInit(): void {
-    //this.clientes = this.clienteService.getClientes();
-    //this.clientes = this.loadCursos();
     //this.productos = this.productoService.getProductos();
-    this.loadCursos();
+    this.loadClientes();
   }
 
+  guardarCliente(): void {
+    const clienteDatos: Cliente = this.clienteForm.value;
+    if (clienteDatos.id === null) {
 
+        this.clienteService.agregarCliente(clienteDatos).subscribe({
+          next: (newCliente) => {
+            this.clientes.push(newCliente);
+          }
+        })
+    } else {
 
-  guardarCliente() {
-    if (this.clienteForm.valid) {
-      const clienteData: Cliente = { id: 0, ...this.clienteForm.value };
-
-      if (this.editIndex !== null) {
-        this.clienteService.editarCliente(this.editIndex, clienteData);
-        this.editIndex = null;
-      } else {
-        this.clienteService.agregarCliente(clienteData);
-      }
-
-      this.clienteForm.reset();
-      (document.getElementById('cerrarModal') as HTMLButtonElement).click();
-      //this.clientes = this.clienteService.getClientes();
-    }
+       this.clienteService.editarCliente(clienteDatos).subscribe({
+          next: (updatedCliente) => {
+            const index = this.clientes.findIndex(cliente => cliente.id === clienteDatos.id);
+            if (index !== -1) {
+              this.clientes[index] = updatedCliente;
+            }
+          }
+        }) 
   }
+  this.clienteForm.reset();
+  (document.getElementById('cerrarModal') as HTMLButtonElement).click();
+}
+
+
   @ViewChild('pedidoModal') pedidoModal: any;
   nuevoPedido(cliente: Cliente) {
     this.editIndex = null;
@@ -96,9 +102,9 @@ export class ClienteComponent {
   }
 
   editarCliente(index: number) {
-    this.editIndex = index;
-    const cliente = this.clientes[index];
-    this.clienteForm.patchValue(cliente);
+     this.editIndex = index;
+     const cliente = this.clientes[index];
+     this.clienteForm.patchValue(cliente);
   }
 
   eliminarCliente(index: number) {
@@ -108,28 +114,14 @@ export class ClienteComponent {
     }
   }
 
-//   cargarClientes(): void {
-//     this.clienteService.getClientes().subscribe({
-//         next: (data) => {
-//             this.clientes = data; // Asigna los clientes obtenidos al arreglo `clientes`
-//         },
-//         error: (err) => {
-//             console.error('Error al obtener clientes:', err); // Manejo de errores
-//         }
-//     });
-// }
-
-
-loadCursos(): void {
+loadClientes(): void {
   this.clienteService.getClientes().subscribe({
-    next: cursosBack => {
-      this.clientes = cursosBack;
+    next: clientesBack => {
+      this.clientes = clientesBack;
     },
     error: error => {
       console.log(error);
     }
   })
 }
-
-
 }

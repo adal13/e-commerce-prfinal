@@ -17,22 +17,16 @@ export class ClienteService {
     { id: 2, nombre: 'María', apellido: 'Gómez', email: 'maria@example.com', telefono: '0987654321', direccion: 'Av. Principal' },
   ];
 
-  // getClientes(): Cliente[] {
-  //   return this.clientes2;
-  // }
-
   getClientes(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(this.apiUrl);
   }
-
   
-  agregarCliente(cliente: Cliente) {
-    cliente.id = this.clientes2.length + 1;
-    this.clientes2.push(cliente);
+  agregarCliente(cliente: Cliente): Observable<Cliente> {
+    return this.http.post<Cliente>(this.apiUrl, cliente);
   }
-
-  editarCliente(index: number, cliente: Cliente) {
-    this.clientes2[index] = cliente;
+  
+  public editarCliente(cliente: Cliente): Observable<Cliente>{
+    return this.http.put<Cliente>(this.apiUrl + '/' + cliente.id, cliente);
   }
 
   eliminarCliente(index: number) {
