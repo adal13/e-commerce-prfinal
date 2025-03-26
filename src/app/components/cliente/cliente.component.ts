@@ -9,7 +9,7 @@ import { ProductoService } from 'src/app/service/producto.service';
 
 declare const bootstrap: any; // 👈 Declaración para TypeScript
 @Component({
-  selector: 'app-cliente',
+  selector: 'app-clientes',
   templateUrl: './cliente.component.html',
   styleUrls: ['./cliente.component.css']
 })
@@ -45,8 +45,10 @@ export class ClienteComponent {
   }
 
   ngOnInit(): void {
-    this.clientes = this.clienteService.getClientes();
-    this.productos = this.productoService.getProductos();
+    //this.clientes = this.clienteService.getClientes();
+    //this.clientes = this.loadCursos();
+    //this.productos = this.productoService.getProductos();
+    this.loadCursos();
   }
 
 
@@ -64,7 +66,7 @@ export class ClienteComponent {
 
       this.clienteForm.reset();
       (document.getElementById('cerrarModal') as HTMLButtonElement).click();
-      this.clientes = this.clienteService.getClientes();
+      //this.clientes = this.clienteService.getClientes();
     }
   }
   @ViewChild('pedidoModal') pedidoModal: any;
@@ -102,9 +104,32 @@ export class ClienteComponent {
   eliminarCliente(index: number) {
     if (confirm('¿Seguro que deseas eliminar este cliente?')) {
       this.clienteService.eliminarCliente(index);
-      this.clientes = this.clienteService.getClientes();
+      //this.clientes = this.clienteService.getClientes();
     }
   }
+
+//   cargarClientes(): void {
+//     this.clienteService.getClientes().subscribe({
+//         next: (data) => {
+//             this.clientes = data; // Asigna los clientes obtenidos al arreglo `clientes`
+//         },
+//         error: (err) => {
+//             console.error('Error al obtener clientes:', err); // Manejo de errores
+//         }
+//     });
+// }
+
+
+loadCursos(): void {
+  this.clienteService.getClientes().subscribe({
+    next: cursosBack => {
+      this.clientes = cursosBack;
+    },
+    error: error => {
+      console.log(error);
+    }
+  })
+}
 
 
 }
