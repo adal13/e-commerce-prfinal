@@ -106,7 +106,7 @@ export class PedidoComponent {
 
  calcularTotal(productos: Producto[]): number {
     //return productos.reduce((total, producto) => total + producto.precio, 0);
-    return productos.reduce((total, producto) => total + (producto.precio ?? 0), 0);
+    return productos.reduce((total, producto) => total + (producto.precio ?? 0), 0); //
 
   }
 

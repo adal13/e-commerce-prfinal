@@ -38,7 +38,7 @@ ngOnInit(): void {
   });
 }
 
-  loadProductos(): void {
+  loadProductos(): void { // ME ENLISTA LOS PRODUCTOS QUE ESTAN EN LA BASE DE DATOS Y LOS MUESTRA EN PRIMERA VISTA
     this.productoService.getProductos().subscribe({
       next: productosBack => {
         this.productos = productosBack;
@@ -78,15 +78,24 @@ ngOnInit(): void {
   this.showForm = true;
   this.productoForm.patchValue({
     id: producto.id,
-    nombre: producto.nombre
+    nombre: producto.nombre,
+    descripcion: producto.descripcion,
+    precio: producto.precio,
+    stock: producto.stock
   })
 }
 
 eliminarProductos(Id: number): void {
-  this.productoService.eliminarProducto(Id).subscribe({
-    next: (eliminarProducto) => {
-      this.productos = this.productos.filter(productos => productos.id !== Id);
-    }
-  })
+
+  if(confirm('¿Seguro? , ¿Seguro? ¿Quieres eliminar Pana?, no hay vuelta atras!')){
+    this.productoService.eliminarProducto(Id).subscribe({
+      next: (eliminarProducto) => {
+        this.productos = this.productos.filter(productos => productos.id !== Id);
+      }
+    })
+  }
+  
+
 }
+
 }
