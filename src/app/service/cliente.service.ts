@@ -12,11 +12,6 @@ export class ClienteService {
 
   constructor(private http: HttpClient) { }
 
-  private clientes2: Cliente[] = [
-    { id: 1, nombre: 'Juan jose', apellido: 'Pérez', email: 'juan@example.com', telefono: '1234567890', direccion: 'Calle 123' },
-    { id: 2, nombre: 'María', apellido: 'Gómez', email: 'maria@example.com', telefono: '0987654321', direccion: 'Av. Principal' },
-  ];
-
   public getClientes(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(this.apiUrl);
   }
