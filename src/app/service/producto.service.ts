@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http'
 import { Producto } from '../models/producto.models';
+import { Observable } from 'rxjs';
+import { Pedido } from '../models/pedido.models';
 
 @Injectable({
   providedIn: 'root'
@@ -8,29 +10,31 @@ import { Producto } from '../models/producto.models';
 
 export class ProductoService {
 
-  private apiUrl ="http://localhost:4200/";
+  private apiUrl ="http://localhost:8090/api/productos";
   
-  private productos: Producto[] = [
-    { id: 1, nombre: 'Laptop', descripcion: 'Laptop de última generación', precio: 1200, stock: 10 },
-    { id: 2, nombre: 'Mouse', descripcion: 'Mouse inalámbrico', precio: 25, stock: 50 }
-  ];
 
-  // constructor(private http: HttpProducto) { }
 
-  getProductos(): Producto[] {
+   constructor(private http: HttpClient) { }
+
+ //getProductos(): Producto[] {
+   // return this.http.get<Producto[]>(this.apiUrl);
+  //}
+  public getProductos(): Observable<Producto[]> {
     return this.http.get<Producto[]>(this.apiUrl);
   }
-
-  agregarProducto(producto: Producto): void {
-    producto.id = this.productos.length + 1;
-    this.productos.push(producto);
+  agregarProducto(producto: Producto): Observable<Producto>{
+    //producto.id = this.productos.length + 1;
+    return this.http.post<Producto>(this.apiUrl, producto);
   }
 
-  editarProducto(index: number, producto: Producto): void {
-    this.productos[index] = { ...producto, id: this.productos[index].id };
+  updateProducto(producto: Producto): Observable<Producto> {
+  return this.http.put<Producto>(this.apiUrl + '/' + producto.id,producto);
   }
 
-  eliminarProducto(index: number): void {
-    this.productos.splice(index, 1);
+  eliminarProducto(id: number): Observable <Producto> {
+    return this.http.delete<Producto>(this.apiUrl + '/' + id);
   }
+
+
+
 }

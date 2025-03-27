@@ -46,7 +46,7 @@ export class ClienteComponent {
 
   ngOnInit(): void {
     this.clientes = this.clienteService.getClientes();
-    this.productos = this.productoService.getProductos();
+   // this.productos = this.productoService.getProductos();
   }
 
 

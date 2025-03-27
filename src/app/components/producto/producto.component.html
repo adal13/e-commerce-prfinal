@@ -32,11 +32,11 @@
             class="btn btn-warning btn-sm me-2"
             data-bs-toggle="modal"
             data-bs-target="#productoModal"
-            (click)="editarProducto(i)"
+            (click)="editarProducto(producto)"
           >
             Editar
           </button>
-          <button class="btn btn-danger btn-sm" (click)="eliminarProducto(i)">
+          <button class="btn btn-danger btn-sm" (click)="producto.id ? eliminarProductos(producto.id) : null">
             Eliminar
           </button>
         </td>
@@ -67,7 +67,7 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form [formGroup]="productoForm" (ngSubmit)="guardarProducto()">
+        <form [formGroup]="productoForm" (ngSubmit)="crearproductos()">
           <div class="mb-3">
             <label class="form-label">Nombre</label>
             <input
