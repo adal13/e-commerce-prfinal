@@ -17,11 +17,11 @@ export class ClienteService {
     { id: 2, nombre: 'María', apellido: 'Gómez', email: 'maria@example.com', telefono: '0987654321', direccion: 'Av. Principal' },
   ];
 
-  getClientes(): Observable<Cliente[]> {
+  public getClientes(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(this.apiUrl);
   }
   
-  agregarCliente(cliente: Cliente): Observable<Cliente> {
+  public agregarCliente(cliente: Cliente): Observable<Cliente> {
     return this.http.post<Cliente>(this.apiUrl, cliente);
   }
   
@@ -29,7 +29,9 @@ export class ClienteService {
     return this.http.put<Cliente>(this.apiUrl + '/' + cliente.id, cliente);
   }
 
-  eliminarCliente(index: number) {
-    this.clientes2.splice(index, 1);
+  public eliminarCliente(clienteId: number): Observable<Cliente>{
+    return this.http.delete<Cliente>(this.apiUrl + '/' + clienteId);
   }
+
+
 }

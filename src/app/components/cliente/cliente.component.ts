@@ -107,10 +107,13 @@ export class ClienteComponent {
      this.clienteForm.patchValue(cliente);
   }
 
-  eliminarCliente(index: number) {
+  eliminarCliente(clienteId: number): void {
     if (confirm('¿Seguro que deseas eliminar este cliente?')) {
-      this.clienteService.eliminarCliente(index);
-      //this.clientes = this.clienteService.getClientes();
+      this.clienteService.eliminarCliente(clienteId).subscribe({
+        next: (deletedCliente) => {
+          this.clientes = this.clientes.filter(cliente => cliente.id !== clienteId);
+        }
+      })
     }
   }
 

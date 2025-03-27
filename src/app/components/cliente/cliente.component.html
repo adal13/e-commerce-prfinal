@@ -37,7 +37,7 @@
           >
             Editar
           </button>
-          <button class="btn btn-danger btn-sm" (click)="eliminarCliente(i)">
+          <button class="btn btn-danger btn-sm" (click)="cliente.id ? eliminarCliente(cliente.id) : null"> 
             Eliminar
           </button>
           <button
