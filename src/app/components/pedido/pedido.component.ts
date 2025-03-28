@@ -44,7 +44,9 @@ export class PedidoComponent {
 
   ngOnInit(): void {
     this.pedidosObs = this.pedidoService.getPedidos();
-    this.clientes = this.clienteService.getClientes();
+    this.clienteService.getClientes().subscribe((clientes) => {
+      this.clientes = clientes;
+    });
     this.productos = this.productoService.getProductos();
 
     this.pedidoService.getPedidos().subscribe((pedidos) => {
