@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
+import {HttpClient} from '@angular/common/http'
 import { Producto } from '../models/producto.models';
+import { Observable } from 'rxjs';
+import { Pedido } from '../models/pedido.models';
+import { environment } from '../environment/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -7,27 +11,33 @@ import { Producto } from '../models/producto.models';
 
 export class ProductoService {
 
-  private productos: Producto[] = [
-    { id: 1, nombre: 'Laptop', descripcion: 'Laptop de última generación', precio: 1200, stock: 10 },
-    { id: 2, nombre: 'Mouse', descripcion: 'Mouse inalámbrico', precio: 25, stock: 50 }
-  ];
+  private apiUrl = environment.apiUrl+"productos/"; // aqio en vez de configurar el http://localhost
+  // se manda a llamar el envriroment que ya tiene el ip apirest que se ocupa y esta configurada
+  
 
-  // constructor() { }
 
-  getProductos(): Producto[] {
-    return this.productos;
+   constructor(private http: HttpClient) { }
+
+ //getProductos(): Producto[] {
+   // return this.http.get<Producto[]>(this.apiUrl);
+  //}
+  public getProductos(): Observable<Producto[]> {  // ENDPOINTS QUE TRAE LISTA DE PRODUCTOS
+    return this.http.get<Producto[]>(this.apiUrl);
+  }
+  agregarProducto(producto: Producto): Observable<Producto>{ // ENDPOINT QUE INSERTA O AGREGA UN PRODUCTO
+    //producto.id = this.productos.length + 1;
+    return this.http.post<Producto>(this.apiUrl+'productos-dto', producto);// se manda a llamar el APIURL ya que esta es
+    // esta estipulado en el eviroment
   }
 
-  agregarProducto(producto: Producto): void {
-    producto.id = this.productos.length + 1;
-    this.productos.push(producto);
+  updateProducto(producto: Producto): Observable<Producto> { // ENDPONT QUE ACTUALIZA EL PRODUCTO
+  return this.http.put<Producto>(this.apiUrl + '/' + producto.id,producto);
   }
 
-  editarProducto(index: number, producto: Producto): void {
-    this.productos[index] = { ...producto, id: this.productos[index].id };
+  eliminarProducto(id: number): Observable <Producto> { //ENDPOINT QUE ELIMINA LOS PRODUCTOS 
+    return this.http.delete<Producto>(this.apiUrl + '/' + id);
   }
 
-  eliminarProducto(index: number): void {
-    this.productos.splice(index, 1);
-  }
+
+
 }

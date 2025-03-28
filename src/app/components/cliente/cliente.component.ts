@@ -54,25 +54,25 @@ export class ClienteComponent {
     const clienteDatos: Cliente = this.clienteForm.value;
     if (clienteDatos.id === null) {
 
-        this.clienteService.agregarCliente(clienteDatos).subscribe({
-          next: (newCliente) => {
-            this.clientes.push(newCliente);
-          }
-        })
+      this.clienteService.agregarCliente(clienteDatos).subscribe({
+        next: (newCliente) => {
+          this.clientes.push(newCliente);
+        }
+      })
     } else {
 
-       this.clienteService.editarCliente(clienteDatos).subscribe({
-          next: (updatedCliente) => {
-            const index = this.clientes.findIndex(cliente => cliente.id === clienteDatos.id);
-            if (index !== -1) {
-              this.clientes[index] = updatedCliente;
-            }
+      this.clienteService.editarCliente(clienteDatos).subscribe({
+        next: (updatedCliente) => {
+          const index = this.clientes.findIndex(cliente => cliente.id === clienteDatos.id);
+          if (index !== -1) {
+            this.clientes[index] = updatedCliente;
           }
-        }) 
+        }
+      })
+    }
+    this.clienteForm.reset();
+    (document.getElementById('cerrarModal') as HTMLButtonElement).click();
   }
-  this.clienteForm.reset();
-  (document.getElementById('cerrarModal') as HTMLButtonElement).click();
-}
 
 
   @ViewChild('pedidoModal') pedidoModal: any;
@@ -102,9 +102,9 @@ export class ClienteComponent {
   }
 
   editarCliente(index: number) {
-     this.editIndex = index;
-     const cliente = this.clientes[index];
-     this.clienteForm.patchValue(cliente);
+    this.editIndex = index;
+    const cliente = this.clientes[index];
+    this.clienteForm.patchValue(cliente);
   }
 
   eliminarCliente(clienteId: number): void {
@@ -117,45 +117,45 @@ export class ClienteComponent {
     }
   }
 
-loadClientes(): void {
-  this.clienteService.getClientes().subscribe({
-    next: clientesBack => {
-      this.clientes = clientesBack;
-    },
-    error: error => {
-      console.log(error);
-    }
-  })
-}
+  loadClientes(): void {
+    this.clienteService.getClientes().subscribe({
+      next: clientesBack => {
+        this.clientes = clientesBack;
+      },
+      error: error => {
+        console.log(error);
+      }
+    })
+  }
 
-loadProductos(): void {
-  this.clienteService.getProductos().subscribe({
-    next: productosBack => {
-      this.productos = productosBack;
-    },
-    error: error => {
-      console.log(error);
-    }
-  })
-}
+  loadProductos(): void {
+    this.clienteService.getProductos().subscribe({
+      next: productosBack => {
+        this.productos = productosBack;
+      },
+      error: error => {
+        console.log(error);
+      }
+    })
+  }
 
 
 
-incrementarCantidad(producto: any): void {
-  producto.cantidad = (producto.cantidad || 0) + 1;
-  console.log("-------------------------")
-  console.log(producto.cantidad);
-
-}
-
-decrementarCantidad(producto: any): void {
-  if (producto.cantidad > 0) {
-    producto.cantidad -= 1;
-
+  incrementarCantidad(producto: any): void {
+    producto.cantidad = (producto.cantidad || 0) + 1;
     console.log("-------------------------")
     console.log(producto.cantidad);
+
   }
-}
+
+  decrementarCantidad(producto: any): void {
+    if (producto.cantidad > 0) {
+      producto.cantidad -= 1;
+
+      console.log("-------------------------")
+      console.log(producto.cantidad);
+    }
+  }
 
 
 

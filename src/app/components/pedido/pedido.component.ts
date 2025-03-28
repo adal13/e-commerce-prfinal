@@ -1,3 +1,5 @@
+
+
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
@@ -44,11 +46,9 @@ export class PedidoComponent {
 
   ngOnInit(): void {
     this.pedidosObs = this.pedidoService.getPedidos();
-    this.clienteService.getClientes().subscribe((clientes) => {
-      this.clientes = clientes;
-    });
-    this.productos = this.productoService.getProductos();
-
+    //this.clientes = this.clienteService.getClientes();
+    //  this.productos = this.productoService.getProductos();
+    this.productoService.getProductos();
     this.pedidoService.getPedidos().subscribe((pedidos) => {
       this.pedidos = pedidos;
       this.pedidosFiltrados = of(pedidos);
@@ -105,7 +105,9 @@ export class PedidoComponent {
   }
 
   calcularTotal(productos: Producto[]): number {
-    return productos.reduce((total, producto) => total + producto.precio, 0);
+    //return productos.reduce((total, producto) => total + producto.precio, 0);
+    return productos.reduce((total, producto) => total + (producto.precio ?? 0), 0); //
+
   }
 
   editarPedido(index: number) {
@@ -141,3 +143,4 @@ export class PedidoComponent {
     }[estado] || '';
   }
 }
+
