@@ -98,4 +98,24 @@ eliminarProductos(Id: number): void {
 
 }
 
+
+onSubmit(){
+  if(this.productoForm.valid){
+    console.log("formulario valido", this.productoForm.value);
+
+  }else{
+    console.log("formulario invalido verifica los campos perro");
+  }
+}
+// metodo para resetear para que no jale los datos de editar a agregar datos nuevos 
+resetproductoForm(){
+this.productoForm.reset({
+
+  nombre:'',
+  descripcion:'',
+  precio: null,
+  stock: null
+});
+
+}
 }

@@ -67,6 +67,7 @@
         ></button>
       </div>
       <div class="modal-body">
+      <!-- validacion 1-->
         <form [formGroup]="productoForm" (ngSubmit)="crearproductos()">
           <div class="mb-3">
             <label class="form-label">Nombre</label>
@@ -76,6 +77,9 @@
               formControlName="nombre"
               required
             />
+           <div *ngIf="productoForm.controls['nombre'].invalid && productoForm.controls['nombre'].touched">
+            el nombre es obligatorio
+          </div>
           </div>
           <div class="mb-3">
             <label class="form-label">Descripción</label>
@@ -85,6 +89,9 @@
               formControlName="descripcion"
               required
             />
+            <div *ngIf="productoForm.controls['descripcion'].invalid && productoForm.controls['descripcion'].touched">
+              La descripcion es obligatoria mi padre,
+            </div>
           </div>
           <div class="mb-3">
             <label class="form-label">Precio</label>
@@ -94,6 +101,9 @@
               formControlName="precio"
               required
             />
+            <div *ngIf="productoForm.controls['precio'].invalid && productoForm.controls['precio'].touched">
+             debes ingresar el precio / el precio no puede ser negativo lo vas a regalar o que?
+            </div>
           </div>
           <div class="mb-3">
             <label class="form-label">Stock</label>
@@ -103,12 +113,18 @@
               formControlName="stock"
               required
             />
+             <!--Se agrego un touched que al dar click y no llenar el campo envie un mensaje de campo requerido -->
+            <div *ngIf="productoForm.controls['stock'].invalid && productoForm.controls['stock'].touched">
+              ¿si no hay stock para que verga lo quieres Registrar?(no puedes deber stock)
+            </div>
           </div>
-          <button type="submit" data-bs-dismiss="modal" class="btn btn-success"> <!--se agrega la etiqueta para que se cierre -->
+          <!-- agregue disiable descativar el boton hasata que se agreguen los campos de manera correcta-->
+          <button type="submit" [disabled]="productoForm.invalid" data-bs-dismiss="modal" class="btn btn-success"> <!--se agrega la etiqueta para que se cierre -->
             {{ editIndex !== null ? "Actualizar" : "Agregar" }}
           </button>
           <button
-            type="button"
+            type="button" 
+            (click)="resetproductoForm()"   
             class="btn btn-secondary ms-2"
             data-bs-dismiss="modal"
             id="cerrarModal"
@@ -118,5 +134,7 @@
         </form>
       </div>
     </div>
+    
   </div>
+ 
 </div>
