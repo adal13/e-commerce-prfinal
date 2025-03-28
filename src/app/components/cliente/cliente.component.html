@@ -69,7 +69,7 @@
       <div class="modal-body">
         <form [formGroup]="clienteForm" (ngSubmit)="guardarCliente()">
           <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre *</label>
+            <label for="nombre" class="form-label">Nombres*</label>
             <input type="text" class="form-control" formControlName="nombre" />
           </div>
           <div class="mb-3">
@@ -154,14 +154,25 @@
             />
           </div>
 
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label class="form-label">Productos</label>
             <select multiple class="form-control" formControlName="productos">
               <option *ngFor="let producto of productos" [value]="producto">
                 {{ producto.nombre }}
               </option>
             </select>
+          </div> -->
+          <div class="mb-3">
+            <label class="form-label">Productos</label>
+            <select multiple class="form-control" formControlName="productos">
+              <div *ngFor="let producto of productos" class="d-flex align-items-center mb-2">
+                <span class="me-3">{{ producto.nombre }}</span>
+                <button type="button" (click)="decrementarCantidad(producto)" class="btn btn-outline-secondary btn-sm">-</button>
+                <button type="button" (click)="incrementarCantidad(producto)" class="btn btn-outline-secondary btn-sm">+</button>
+              </div>           
+            </select>
           </div>
+
           <div class="mb-3">
             <label class="form-label">Estado</label>
             <select class="form-control" formControlName="estado">

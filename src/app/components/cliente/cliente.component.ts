@@ -46,8 +46,8 @@ export class ClienteComponent {
   }
 
   ngOnInit(): void {
-    //this.productos = this.productoService.getProductos();
     this.loadClientes();
+    this.loadProductos();
   }
 
   guardarCliente(): void {
@@ -127,4 +127,36 @@ loadClientes(): void {
     }
   })
 }
+
+loadProductos(): void {
+  this.clienteService.getProductos().subscribe({
+    next: productosBack => {
+      this.productos = productosBack;
+    },
+    error: error => {
+      console.log(error);
+    }
+  })
+}
+
+
+
+incrementarCantidad(producto: any): void {
+  producto.cantidad = (producto.cantidad || 0) + 1;
+  console.log("-------------------------")
+  console.log(producto.cantidad);
+
+}
+
+decrementarCantidad(producto: any): void {
+  if (producto.cantidad > 0) {
+    producto.cantidad -= 1;
+
+    console.log("-------------------------")
+    console.log(producto.cantidad);
+  }
+}
+
+
+
 }
